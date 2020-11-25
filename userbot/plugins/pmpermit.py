@@ -5,20 +5,21 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon import events, errors, functions, types
 from userbot import ALIVE_NAME, CMD_HELP
 from userbot.utils import admin_cmd
-from . import check 
+from . import check
 
 PM_WARNS = {}
 PREV_REPLY_MESSAGE = {}
 CACHE = {}
 PMPERMIT_PIC = Config.PMPERMIT_PIC
-DEFAULTUSER = str(ALIVE_NAME) if ALIVE_NAME else "**No name set yet nibba, check pinned message in** @XtraTgBot"
+DEFAULTUSER = str(
+    ALIVE_NAME) if ALIVE_NAME else "**No name set yet nibba, check pinned message in** @XtraTgBot"
 USER_BOT_WARN_ZERO = "`You were spamming my inbox, henceforth you are blocked by Redkobras userbot.` **You cant text me anymore** "
 
 if Var.PRIVATE_GROUP_ID is not None:
     @borg.on(admin_cmd(pattern="approve ?(.*)"))
     async def approve_p_m(event):
         if event.fwd_from:
-           return
+            return
         replied_user = await event.client(GetFullUserRequest(event.chat_id))
         firstname = replied_user.user.first_name
         reason = event.pattern_match.group(1)
@@ -42,7 +43,7 @@ if Var.PRIVATE_GROUP_ID is not None:
         chat = await event.get_chat()
         if event.is_private:
             if not pmpermit_sql.is_approved(chat.id):
-                if not chat.id in PM_WARNS:
+                if chat.id not in PM_WARNS:
                     pmpermit_sql.approve(chat.id, "outgoing")
 
     @borg.on(admin_cmd(pattern="disapprove ?(.*)"))
@@ -56,8 +57,8 @@ if Var.PRIVATE_GROUP_ID is not None:
         if event.is_private:
             if pmpermit_sql.is_approved(chat.id):
                 pmpermit_sql.disapprove(chat.id)
-                await event.edit("disapproved to pm [{}](tg://user?id={})".format(firstname, chat.id))           
-                
+                await event.edit("disapproved to pm [{}](tg://user?id={})".format(firstname, chat.id))
+
     @borg.on(admin_cmd(pattern="block ?(.*)"))
     async def block_p_m(event):
         if event.fwd_from:
@@ -116,17 +117,17 @@ if Var.PRIVATE_GROUP_ID is not None:
         current_message_text = message_text.lower()
         USER_BOT_NO_WARN = ("Hey, dies ist eine Automatische Antwort."
 
-"Bitte hinterlasse folgendes in einer Nachricht;
-"-Wer bist du?"
-"-Was möchtest du?"
-"-Woher hast du mein @?"
+                            "Bitte hinterlasse folgendes in einer Nachricht
+                            "-Wer bist du?"
+                            "-Was möchtest du?"
+                            "-Woher hast du mein @?"
 
-"~~~"
-                            
-"Please answer everything in one message;"
-"-Who are you?"
-"-What do you want from me"
-"-Where did you get my @ from?.")
+                            "~~~"
+
+                            "Please answer everything in one message;"
+                            "-Who are you?"
+                            "-What do you want from me"
+                            "-Where did you get my @ from?.")
         if USER_BOT_NO_WARN == message_text:
             # userbot's should not reply to other userbot's
             # https://core.telegram.org/bots/faq#why-doesn-39t-my-bot-see-messages-from-other-bots
@@ -177,46 +178,49 @@ if Var.PRIVATE_GROUP_ID is not None:
                     silent=True
                 )
                 return
-            except:
+            except BaseException:
                 return
         catid = chat_id
         if PMPERMIT_PIC:
             if Config.CUSTOM_PMPERMIT_TEXT:
-                USER_BOT_NO_WARN = (f"[Hallo](tg://user?id={catid})\n\n"
-                      "This is auto generated message"
-                     f"Bitte hinterlasse folgendes in einer Nachricht,"
-                      "-Wer bist du?\n\n"
-                            "-Was möchtest du?\n\n"
-                            "-Woher hast du mein @?\n\n"
-                            
-                                                 f"Please answer everything in one message,"
-                      "-Who are you?\n\n"
-                            "-What do you want from me?\n\n"
-                            "-Where did you get my @ from?\n\n"
-                      "**Bitte warte auf eine Antwort von mir.**")
-            r = await event.reply( USER_BOT_NO_WARN , file = PMPERMIT_PIC)
+                USER_BOT_NO_WARN = (
+                    f"[Hallo](tg://user?id={catid})\n\n"
+                    "This is auto generated message"
+                    f"Bitte hinterlasse folgendes in einer Nachricht,"
+                    "-Wer bist du?\n\n"
+                    "-Was möchtest du?\n\n"
+                    "-Woher hast du mein @?\n\n"
+                    f"Please answer everything in one message,"
+                    "-Who are you?\n\n"
+                    "-What do you want from me?\n\n"
+                    "-Where did you get my @ from?\n\n"
+                    "**Bitte warte auf eine Antwort von mir.**")
+            r = await event.reply(USER_BOT_NO_WARN, file=PMPERMIT_PIC)
         else:
             if Config.CUSTOM_PMPERMIT_TEXT:
-                USER_BOT_NO_WARN = (Config.CUSTOM_PMPERMIT_TEXT + '\n\n' + "**Bitte warte auf eine Antwort oder du wirst nach der 5ten Nachricht blockiert.**")
+                USER_BOT_NO_WARN = (
+                    Config.CUSTOM_PMPERMIT_TEXT +
+                    '\n\n' +
+                    "**Bitte warte auf eine Antwort oder du wirst nach der 5ten Nachricht blockiert.**")
             else:
-                USER_BOT_NO_WARN = (f"[Hallo](tg://user?id={catid})\n\n"
-                      "This is auto generated message"
-                     f"Bitte hinterlasse folgendes in einer Nachricht,"
-                      "-Wer bist du?\n\n"
-                            "-Was möchtest du?\n\n"
-                            "-Woher hast du mein @?\n\n"
-                            
-                                                 f"Please answer everything in one message,"
-                      "-Who are you?\n\n"
-                            "-What do you want from me?\n\n"
-                            "-Where did you get my @ from?\n\n"
-                      "**Bitte warte auf eine Antwort von mir.**")
+                USER_BOT_NO_WARN = (
+                    f"[Hallo](tg://user?id={catid})\n\n"
+                    "This is auto generated message"
+                    f"Bitte hinterlasse folgendes in einer Nachricht,"
+                    "-Wer bist du?\n\n"
+                    "-Was möchtest du?\n\n"
+                    "-Woher hast du mein @?\n\n"
+                    f"Please answer everything in one message,"
+                    "-Who are you?\n\n"
+                    "-What do you want from me?\n\n"
+                    "-Where did you get my @ from?\n\n"
+                    "**Bitte warte auf eine Antwort von mir.**")
             r = await event.reply(USER_BOT_NO_WARN)
         PM_WARNS[chat_id] += 1
         if chat_id in PREV_REPLY_MESSAGE:
             await PREV_REPLY_MESSAGE[chat_id].delete()
         PREV_REPLY_MESSAGE[chat_id] = r
-                   
+
 CMD_HELP.update({
     "pmpermit":
     ".approve\
